@@ -4,9 +4,9 @@ class WelcomeController < ApplicationController
 
 
 	def index
-		@track = Welcome.all
+		@tracks = Welcome.all
 		respond_to do |format|
-			format.json {render json: @track}
+			format.json {render json: @tracks}
 		end
 	end
 
