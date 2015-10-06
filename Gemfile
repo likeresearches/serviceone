@@ -1,6 +1,9 @@
 source 'https://rubygems.org'
 
+#Fazer requisições API rest
+gem 'rest-client'
 
+#Servidor Puma para Web (Heroku)
 gem 'puma'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
