@@ -16,8 +16,11 @@ ActiveRecord::Schema.define(version: 20150930183147) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "welcomes", force: :cascade do |t|
-    t.string   "name"
+  create_table "tracks", force: :cascade do |t|
+    t.string   "latitude"
+    t.string   "longitude"
+    t.string   "heading"
+    t.string   "accuracy"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
