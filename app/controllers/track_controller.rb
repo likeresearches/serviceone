@@ -7,15 +7,23 @@ class TrackController < ApplicationController
 
 	def index
 		@tracks = Track.all
+		@distances = checkAround(@tracks[0])
 		respond_to do |format|
-			format.json {render json: @tracks}
+			format.json {render json: @distances}
 		end
 	end
 
 	def create
-		@track = Track.new(welcome_params)
-		@data = distancia(@track,lastTrack)
-		puts @data
+		if Track.find_by(user: params[:user]).blank?
+			@track = Track.new(welcome_params)
+			@track.save
+		else
+			@track = Track.find_by(user: params[:user])
+			@track.update_attributes(welcome_params)
+		end
+
+		@data = checkAround(@track)
+		
 		respond_to do |format|
 			if @track.save
 				format.json {render json: @data, status: :created}
@@ -25,26 +33,17 @@ class TrackController < ApplicationController
 		end
 	end
 
-	def test
-		myGps = Track.find_by user: 'Edu'
-		@liveGps = Track.where(status: 'live')
+	def checkAround(track)
+		myGps = Track.find_by user: track.user
+		liveGps = Track.where(status: 'live')
 		
 		@arrayDistance = {}
 
-		@liveGps.each do |point|
+		liveGps.each do |point|
 			jsonDistancia = JSON.parse distancia(point, myGps)
-			puts jsonDistancia
 			@arrayDistance[point.user] = jsonDistancia["rows"][0]["elements"][0]["distance"]["text"]
 		end
-
-		respond_to do |format|
-			if @track.save
-				format.json {render json: @data, status: :created}
-			else
-				format.json {render json: @track.errors, status: :unprocessable_entity}
-			end
-		end
-		
+		@arrayDistance
 	end
 
 	def distancia (destino, origem)
@@ -55,7 +54,7 @@ class TrackController < ApplicationController
 	end
 
 	def welcome_params
-		params.require(:track).permit(:latitude, :longitude, :heading, :accuracy)
+		params.require(:track).permit(:user,:status, :latitude, :longitude, :heading, :accuracy)
 	end
 
 end
