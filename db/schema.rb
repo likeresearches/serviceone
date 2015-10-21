@@ -17,6 +17,8 @@ ActiveRecord::Schema.define(version: 20150930183147) do
   enable_extension "plpgsql"
 
   create_table "tracks", force: :cascade do |t|
+    t.string   "user"
+    t.string   "status"
     t.string   "latitude"
     t.string   "longitude"
     t.string   "heading"
