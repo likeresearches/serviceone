@@ -13,7 +13,6 @@ class TrackController < ApplicationController
 	end
 
 	def create
-		lastTrack = Track.last
 		@track = Track.new(welcome_params)
 		@data = distancia(@track,lastTrack)
 		puts @data
@@ -26,9 +25,31 @@ class TrackController < ApplicationController
 		end
 	end
 
+	def test
+		myGps = Track.find_by user: 'Edu'
+		@liveGps = Track.where(status: 'live')
+		
+		@arrayDistance = {}
+
+		@liveGps.each do |point|
+			jsonDistancia = JSON.parse distancia(point, myGps)
+			puts jsonDistancia
+			@arrayDistance[point.user] = jsonDistancia["rows"][0]["elements"][0]["distance"]["text"]
+		end
+
+		respond_to do |format|
+			if @track.save
+				format.json {render json: @data, status: :created}
+			else
+				format.json {render json: @track.errors, status: :unprocessable_entity}
+			end
+		end
+		
+	end
+
 	def distancia (destino, origem)
 		base_url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins="
-		uri = "#{base_url}#{origem.latitude},#{origem.longitude}&destinations=#{destino.latitude},#{destino.longitude}&key=AIzaSyBy7HiPiBN8d8WRmtP3wu2oc0GeO_0wqas"
+		uri = "#{base_url}#{origem.latitude},#{origem.longitude}&destinations=#{destino.latitude},#{destino.longitude}&mode=bicycling&key=AIzaSyBy7HiPiBN8d8WRmtP3wu2oc0GeO_0wqas"
 		rest_resource = RestClient::Resource.new(uri)
 		rest_resource.get
 	end
