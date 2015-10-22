@@ -8,6 +8,7 @@ class TrackController < ApplicationController
 	def index
 		@tracks = Track.all
 		@distances = checkAround(@tracks[0])
+	
 		respond_to do |format|
 			format.json {render json: @distances}
 		end
@@ -37,12 +38,18 @@ class TrackController < ApplicationController
 		myGps = Track.find_by user: track.user
 		liveGps = Track.where(status: 'live')
 		
-		@arrayDistance = {}
-
+		@arrayDistance = []
+		
 		liveGps.each do |point|
+			p = Distance.new
+			p.user = point.user
+			p.latitude = point.latitude
+			p.longitude = point.longitude
 			jsonDistancia = JSON.parse distancia(point, myGps)
-			@arrayDistance[point.user] = jsonDistancia["rows"][0]["elements"][0]["distance"]["text"]
+			p.distancia = jsonDistancia["rows"][0]["elements"][0]["distance"]["text"]
+			@arrayDistance << p
 		end
+		
 		@arrayDistance
 	end
 
