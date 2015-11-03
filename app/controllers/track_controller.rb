@@ -39,23 +39,39 @@ class TrackController < ApplicationController
 		liveGps = Track.where(status: 'live')
 		
 		@arrayDistance = []
+		@stringDestination = ""
 		
 		liveGps.each do |point|
 			p = Distance.new
 			p.user = point.user
 			p.latitude = point.latitude
 			p.longitude = point.longitude
-			jsonDistancia = JSON.parse distancia(point, myGps)
-			p.distancia = jsonDistancia["rows"][0]["elements"][0]["distance"]["text"]
+			@stringDestination = @stringDestination + "#{point.latitude},#{point.longitude}|"
 			@arrayDistance << p
 		end
+
+		jsonDistancia = JSON.parse distancia(@stringDestination, myGps)
+		
+
+		@arrayDistance.each_with_index do|item,index|
+			item.distancia = jsonDistancia["rows"][0]["elements"][index]["distance"]["text"]
+		end
+
+			#p = Distance.new
+			#p.user = point.user
+			#p.latitude = point.latitude
+			#p.longitude = point.longitude
+			#jsonDistancia = JSON.parse distancia(@stringDestination, myGps)
+			#p.distancia = jsonDistancia["rows"][0]["elements"][0]["distance"]["text"]
+			#@arrayDistance << p
+		
 		
 		@arrayDistance
 	end
 
 	def distancia (destino, origem)
 		base_url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins="
-		uri = "#{base_url}#{origem.latitude},#{origem.longitude}&destinations=#{destino.latitude},#{destino.longitude}&mode=bicycling&key=AIzaSyBy7HiPiBN8d8WRmtP3wu2oc0GeO_0wqas"
+		uri = "#{base_url}#{origem.latitude},#{origem.longitude}&destinations=#{destino}&mode=bicycling&key=AIzaSyBy7HiPiBN8d8WRmtP3wu2oc0GeO_0wqas"
 		rest_resource = RestClient::Resource.new(uri)
 		rest_resource.get
 	end
