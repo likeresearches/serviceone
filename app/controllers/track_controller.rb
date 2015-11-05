@@ -23,6 +23,18 @@ class TrackController < ApplicationController
 			@track.update_attributes(welcome_params)
 		end
 
+		respond_to do |format|
+			if @track.save
+				format.json {render json: @track, status: :created}
+			else
+				format.json {render json: @track.errors, status: :unprocessable_entity}
+			end
+		end
+	end
+
+	def return
+		@track = Track.find_by(user: params[:user])
+		
 		@data = checkAround(@track)
 		
 		respond_to do |format|
@@ -36,8 +48,8 @@ class TrackController < ApplicationController
 
 	def checkAround(track)
 		myGps = Track.find_by user: track.user
-		liveGps = Track.where(status: 'live')
-		
+		liveGps = Track.where('updated_at >= :five_seconds_ago', :five_seconds_ago => Time.now - 10.seconds)
+
 		@arrayDistance = []
 		@stringDestination = ""
 		
