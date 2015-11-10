@@ -1,28 +1,18 @@
-== README
-
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
-Things you may want to cover:
 
 * Ruby version
+ - ruby 2.2.3p173
 
 * System dependencies
+	You should install the follow:
+ - Rails 4.2.4 (http://rubyonrails.org/download/)
+ - Postgres 9.4 (http://postgresapp.com)
 
 * Configuration
+ 1. Git clone project
+ 2. Run $ bundle install (Install Gems Dependencies)
+ 3. Run $ rake db:schema:load (Database Creation)
 
-* Database creation
+* Run Project
+ 4. Run $ Rails s
 
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-
-
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+ 
