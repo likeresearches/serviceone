@@ -23,6 +23,7 @@ ActiveRecord::Schema.define(version: 20150930183147) do
     t.string   "longitude"
     t.string   "heading"
     t.string   "accuracy"
+    t.string   "speed"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

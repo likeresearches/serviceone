@@ -23,6 +23,8 @@ class TrackController < ApplicationController
 			@track.update_attributes(welcome_params)
 		end
 
+		
+
 		respond_to do |format|
 			if @track.save
 				format.json {render json: @track, status: :created}
@@ -48,7 +50,8 @@ class TrackController < ApplicationController
 
 	def checkAround(track)
 		myGps = Track.find_by(user: track.user)
-		liveGps = Track.where('updated_at >= :one_seconds_ago', :one_seconds_ago => Time.now - 1.seconds)
+		#liveGps = Track.where('updated_at >= :one_seconds_ago', :one_seconds_ago => Time.now - 1.seconds)
+		liveGps = Track.all
 
 		@arrayDistance = []
 		@stringDestination = ""
@@ -58,6 +61,8 @@ class TrackController < ApplicationController
 			p.user = point.user
 			p.latitude = point.latitude
 			p.longitude = point.longitude
+			p.heading = point.heading
+			p.speed = point.speed
 			@stringDestination = @stringDestination + "#{point.latitude},#{point.longitude}|"
 			@arrayDistance << p
 		end
@@ -67,18 +72,11 @@ class TrackController < ApplicationController
 
 		@arrayDistance.each_with_index do|item,index|
 			item.distancia = jsonDistancia["rows"][0]["elements"][index]["distance"]["text"]
+			item.value = jsonDistancia["rows"][0]["elements"][index]["distance"]["value"]
 		end
 
-			#p = Distance.new
-			#p.user = point.user
-			#p.latitude = point.latitude
-			#p.longitude = point.longitude
-			#jsonDistancia = JSON.parse distancia(@stringDestination, myGps)
-			#p.distancia = jsonDistancia["rows"][0]["elements"][0]["distance"]["text"]
-			#@arrayDistance << p
-		
-		
-		@arrayDistance
+
+		@arrayDistance.sort_by! &:value
 	end
 
 	def distancia (destino, origem)
@@ -89,7 +87,7 @@ class TrackController < ApplicationController
 	end
 
 	def welcome_params
-		params.require(:track).permit(:user,:status, :latitude, :longitude, :heading, :accuracy)
+		params.require(:track).permit(:user, :status, :latitude, :longitude, :speed, :heading)
 	end
 
 end
