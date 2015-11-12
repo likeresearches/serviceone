@@ -67,11 +67,9 @@ class TrackController < ApplicationController
 			@arrayDistance << p
 		end
 
-		puts @arrayDistance[0].user
 
 		jsonDistancia = JSON.parse distancia(@stringDestination, myGps)
 		
-		puts jsonDistancia
 
 		@arrayDistance.each_with_index do|item,index|
 			item.distancia = jsonDistancia["rows"][0]["elements"][index]["distance"]["text"]
