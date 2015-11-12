@@ -7,7 +7,7 @@ class TrackController < ApplicationController
 
 	def index
 		@tracks = Track.all
-		@distances = checkAround(@tracks[0])
+		
 	
 		respond_to do |format|
 			format.json {render json: @distances}
