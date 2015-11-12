@@ -81,7 +81,7 @@ class TrackController < ApplicationController
 
 	def distancia (destino, origem)
 		base_url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins="
-		uri = "#{base_url}#{origem.latitude},#{origem.longitude}&destinations=#{destino}&mode=bicycling&key=AIzaSyBy7HiPiBN8d8WRmtP3wu2oc0GeO_0wqas"
+		uri = "#{base_url}#{origem.latitude},#{origem.longitude}&destinations=#{destino}&mode=bicycling&key=AIzaSyCb4EAvkwEc9b_iLc1lYFgnh1Sf0XyLhfA"
 		rest_resource = RestClient::Resource.new(uri)
 		rest_resource.get
 	end
