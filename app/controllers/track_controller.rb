@@ -7,10 +7,10 @@ class TrackController < ApplicationController
 
 	def index
 		@tracks = Track.all
-		
+		@distan = checkAround(@tracks[0])
 	
 		respond_to do |format|
-			format.json {render json: @tracks}
+			format.json {render json: @distan}
 		end
 	end
 
@@ -67,8 +67,11 @@ class TrackController < ApplicationController
 			@arrayDistance << p
 		end
 
+		puts @arrayDistance[0].user
+
 		jsonDistancia = JSON.parse distancia(@stringDestination, myGps)
 		
+		puts jsonDistancia
 
 		@arrayDistance.each_with_index do|item,index|
 			item.distancia = jsonDistancia["rows"][0]["elements"][index]["distance"]["text"]
@@ -81,7 +84,7 @@ class TrackController < ApplicationController
 
 	def distancia (destino, origem)
 		base_url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins="
-		uri = "#{base_url}#{origem.latitude},#{origem.longitude}&destinations=#{destino}&mode=bicycling&key=AIzaSyCb4EAvkwEc9b_iLc1lYFgnh1Sf0XyLhfA"
+		uri = "#{base_url}#{origem.latitude},#{origem.longitude}&destinations=#{destino}&mode=bicycling&key=AIzaSyD8gA4tBBbbA8SIfQ7YBAwxMvY5wgk3Otg"
 		rest_resource = RestClient::Resource.new(uri)
 		rest_resource.get
 	end
