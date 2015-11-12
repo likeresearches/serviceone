@@ -10,7 +10,7 @@ class TrackController < ApplicationController
 		
 	
 		respond_to do |format|
-			format.json {render json: @distances}
+			format.json {render json: @tracks}
 		end
 	end
 
