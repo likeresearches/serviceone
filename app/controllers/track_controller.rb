@@ -7,8 +7,13 @@ class TrackController < ApplicationController
 
 	def index
 		@tracks = Track.all
-		@distan = checkAround(@tracks[0])
-	
+		
+		if (@tracks[0] != nil)
+			@distan = checkAround(@tracks[0])
+		else
+			@distan = []
+		end
+
 		respond_to do |format|
 			format.json {render json: @distan}
 		end
@@ -53,29 +58,32 @@ class TrackController < ApplicationController
 		#liveGps = Track.where('updated_at >= :one_seconds_ago', :one_seconds_ago => Time.now - 1.seconds)
 		liveGps = Track.all
 
-		@arrayDistance = []
-		@stringDestination = ""
+		if (myGps != nil)
+			@arrayDistance = []
+			@stringDestination = ""
 		
-		liveGps.each do |point|
-			p = Distance.new
-			p.user = point.user
-			p.latitude = point.latitude
-			p.longitude = point.longitude
-			p.heading = point.heading
-			p.speed = point.speed
-			@stringDestination = @stringDestination + "#{point.latitude},#{point.longitude}|"
-			@arrayDistance << p
+			liveGps.each do |point|
+				p = Distance.new
+				p.user = point.user
+				p.latitude = point.latitude
+				p.longitude = point.longitude
+				p.heading = point.heading
+				p.speed = point.speed
+				@stringDestination = @stringDestination + "#{point.latitude},#{point.longitude}|"
+				@arrayDistance << p
+			end
+
+
+			jsonDistancia = JSON.parse distancia(@stringDestination, myGps)
+			
+
+			@arrayDistance.each_with_index do|item,index|
+				item.distancia = jsonDistancia["rows"][0]["elements"][index]["distance"]["text"]
+				item.value = jsonDistancia["rows"][0]["elements"][index]["distance"]["value"]
+			end
+
+			@arrayDistance = tempo(@arrayDistance)
 		end
-
-
-		jsonDistancia = JSON.parse distancia(@stringDestination, myGps)
-		
-
-		@arrayDistance.each_with_index do|item,index|
-			item.distancia = jsonDistancia["rows"][0]["elements"][index]["distance"]["text"]
-			item.value = jsonDistancia["rows"][0]["elements"][index]["distance"]["value"]
-		end
-
 
 		@arrayDistance.sort_by! &:value
 	end
@@ -85,6 +93,21 @@ class TrackController < ApplicationController
 		uri = "#{base_url}#{origem.latitude},#{origem.longitude}&destinations=#{destino}&mode=bicycling&key=AIzaSyD8gA4tBBbbA8SIfQ7YBAwxMvY5wgk3Otg"
 		rest_resource = RestClient::Resource.new(uri)
 		rest_resource.get
+	end
+
+	def tempo(arrayDistance)
+		headingInterval = (arrayDistance[0].heading.to_f-5 .. arrayDistance[0].heading.to_f+5)
+		arrayDistance.each_with_index do |point, index|
+			velRelativa =  arrayDistance[index].speed.to_f - arrayDistance[0].speed.to_f
+			puts velRelativa
+			if (velRelativa != 0)
+				time = ((arrayDistance[index].value.to_f/1000)/velRelativa)*60
+				point.tempo = time.round
+			else
+				point.tempo = 0
+			end
+		end
+		arrayDistance
 	end
 
 	def welcome_params

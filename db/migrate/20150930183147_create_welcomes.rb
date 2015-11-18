@@ -8,6 +8,7 @@ class CreateWelcomes < ActiveRecord::Migration
     	t.string :heading
     	t.string :accuracy
       t.string :speed
+      t.string :tempo
 
       t.timestamps null: false
     end

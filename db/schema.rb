@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(version: 20150930183147) do
     t.string   "heading"
     t.string   "accuracy"
     t.string   "speed"
+    t.string   "tempo"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
