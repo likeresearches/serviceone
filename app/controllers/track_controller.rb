@@ -57,11 +57,17 @@ class TrackController < ApplicationController
 		#liveGps = Track.all
 		liveGps = Track.where('updated_at >= :one_seconds_ago', :one_seconds_ago => Time.now - 3.seconds)
 		myGps = Track.find_by(user: track.user)
-		
-		
+		@arrayDistance = []
+		@arrayDistance << p
 
 		if (myGps != nil)
-			@arrayDistance = []
+			p = Distance.new
+			p.user = point.user
+			p.latitude = point.latitude
+			p.longitude = point.longitude
+			p.heading = point.heading
+			p.speed = point.speed
+			
 			@stringDestination = ""
 		
 			liveGps.each do |point|
@@ -87,7 +93,7 @@ class TrackController < ApplicationController
 			@arrayDistance = tempo(@arrayDistance)
 			return @arrayDistance.sort_by! &:value
 		else
-			return @arrayDistance = ['']
+			return @arrayDistance ]
 		end
 	end
 
