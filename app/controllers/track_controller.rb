@@ -62,39 +62,37 @@ class TrackController < ApplicationController
 
 		if (myGps != nil)
 			p = Distance.new
-			p.user = point.user
-			p.latitude = point.latitude
-			p.longitude = point.longitude
-			p.heading = point.heading
-			p.speed = point.speed
+			p.user = myGps.user
+			p.latitude = myGps.latitude
+			p.longitude = myGps.longitude
+			p.heading = myGps.heading
+			p.speed = myGps.speed
 			@arrayDistance << p
-			
+
 			@stringDestination = ""
-		
-			liveGps.each do |point|
-				p = Distance.new
-				p.user = point.user
-				p.latitude = point.latitude
-				p.longitude = point.longitude
-				p.heading = point.heading
-				p.speed = point.speed
-				@stringDestination = @stringDestination + "#{point.latitude},#{point.longitude}|"
-				@arrayDistance << p
-			end
 
-
-			jsonDistancia = JSON.parse distancia(@stringDestination, myGps)
-			
-
-			@arrayDistance.each_with_index do|item,index|
-				item.distancia = jsonDistancia["rows"][0]["elements"][index]["distance"]["text"]
-				item.value = jsonDistancia["rows"][0]["elements"][index]["distance"]["value"]
+			if (!liveGps.blank?)
+				liveGps.each do |point|
+					p = Distance.new
+					p.user = point.user
+					p.latitude = point.latitude
+					p.longitude = point.longitude
+					p.heading = point.heading
+					p.speed = point.speed
+					@stringDestination = @stringDestination + "#{point.latitude},#{point.longitude}|"
+					@arrayDistance << p
+				end
+				jsonDistancia = JSON.parse distancia(@stringDestination, myGps)
+					@arrayDistance.each_with_index do|item,index|
+					item.distancia = jsonDistancia["rows"][0]["elements"][index]["distance"]["text"]
+					item.value = jsonDistancia["rows"][0]["elements"][index]["distance"]["value"]
+				end
 			end
 
 			@arrayDistance = tempo(@arrayDistance)
 			return @arrayDistance.sort_by! &:value
 		else
-			return @arrayDistance ]
+			return @arrayDistance
 		end
 	end
 
