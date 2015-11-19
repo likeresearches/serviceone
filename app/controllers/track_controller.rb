@@ -99,15 +99,17 @@ class TrackController < ApplicationController
 	end
 
 	def tempo(arrayDistance)
-		headingInterval = (arrayDistance[0].heading.to_f-5 .. arrayDistance[0].heading.to_f+5)
-		arrayDistance.each_with_index do |point, index|
-			velRelativa =  arrayDistance[index].speed.to_f - arrayDistance[0].speed.to_f
-			puts velRelativa
-			if (velRelativa != 0)
-				time = ((arrayDistance[index].value.to_f/1000)/velRelativa)*60
-				point.tempo = time.round
-			else
-				point.tempo = 0
+		if (arrayDistance != nil)
+			headingInterval = (arrayDistance[0].heading.to_f-5 .. arrayDistance[0].heading.to_f+5)
+			arrayDistance.each_with_index do |point, index|
+				velRelativa =  arrayDistance[index].speed.to_f - arrayDistance[0].speed.to_f
+				puts velRelativa
+				if (velRelativa != 0)
+					time = ((arrayDistance[index].value.to_f/1000)/velRelativa)*60
+					point.tempo = time.round
+				else
+					point.tempo = 0
+				end
 			end
 		end
 		arrayDistance
