@@ -100,6 +100,7 @@ class TrackController < ApplicationController
 			p.longitude = myGps.longitude
 			p.heading = myGps.heading
 			p.speed = myGps.speed
+			p.value = 0
 			@arrayDistance << p
 
 
@@ -112,6 +113,7 @@ class TrackController < ApplicationController
 			p.longitude = myGps.longitude
 			p.heading = myGps.heading
 			p.speed = myGps.speed
+			p.value = 0
 			@arrayDistance << p
 
 			return @arrayDistance
