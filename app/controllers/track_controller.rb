@@ -103,7 +103,7 @@ class TrackController < ApplicationController
 			@arrayDistance << p
 
 
-			return @arrayDistance.sort_by &:value
+			return @arrayDistance
 		else
 
 			p = Distance.new
@@ -114,7 +114,7 @@ class TrackController < ApplicationController
 			p.speed = myGps.speed
 			@arrayDistance << p
 
-			return @arrayDistance.sort_by &:value
+			return @arrayDistance
 		end
 	end
 
