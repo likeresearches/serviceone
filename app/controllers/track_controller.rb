@@ -54,9 +54,11 @@ class TrackController < ApplicationController
 	end
 
 	def checkAround(track)
+		#liveGps = Track.all
+		liveGps = Track.where('updated_at >= :one_seconds_ago', :one_seconds_ago => Time.now - 3.seconds)
 		myGps = Track.find_by(user: track.user)
-		#liveGps = Track.where('updated_at >= :one_seconds_ago', :one_seconds_ago => Time.now - 1.seconds)
-		liveGps = Track.all
+		
+		
 
 		if (myGps != nil)
 			@arrayDistance = []
@@ -83,9 +85,10 @@ class TrackController < ApplicationController
 			end
 
 			@arrayDistance = tempo(@arrayDistance)
+			return @arrayDistance.sort_by! &:value
+		else
+			return @arrayDistance = ['']
 		end
-
-		@arrayDistance.sort_by! &:value
 	end
 
 	def distancia (destino, origem)
