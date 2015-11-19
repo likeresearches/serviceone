@@ -55,7 +55,7 @@ class TrackController < ApplicationController
 
 	def checkAround(track)
 		#liveGps = Track.all
-		liveGps = Track.where('updated_at >= :one_seconds_ago', :one_seconds_ago => Time.now - 3.seconds)
+		liveGps = Track.where('updated_at >= :one_seconds_ago', :one_seconds_ago => Time.now - 5.seconds)
 		myGps = Track.find_by(user: track.user)
 		@arrayDistance = []
 		
@@ -93,6 +93,16 @@ class TrackController < ApplicationController
 			end
 
 			@arrayDistance = tempo(@arrayDistance)
+
+			p = Distance.new
+			p.user = myGps.user
+			p.latitude = myGps.latitude
+			p.longitude = myGps.longitude
+			p.heading = myGps.heading
+			p.speed = myGps.speed
+			@arrayDistance << p
+
+
 			return @arrayDistance
 		else
 			return @arrayDistance
