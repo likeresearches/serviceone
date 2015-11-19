@@ -99,7 +99,8 @@ class TrackController < ApplicationController
 	end
 
 	def tempo(arrayDistance)
-		if (arrayDistance != nil)
+		puts arrayDistance
+		if (!arrayDistance.blank?)
 			headingInterval = (arrayDistance[0].heading.to_f-5 .. arrayDistance[0].heading.to_f+5)
 			arrayDistance.each_with_index do |point, index|
 				velRelativa =  arrayDistance[index].speed.to_f - arrayDistance[0].speed.to_f
