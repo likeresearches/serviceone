@@ -103,9 +103,18 @@ class TrackController < ApplicationController
 			@arrayDistance << p
 
 
-			return @arrayDistance
+			return @arrayDistance.sort_by &:value
 		else
-			return @arrayDistance
+
+			p = Distance.new
+			p.user = myGps.user
+			p.latitude = myGps.latitude
+			p.longitude = myGps.longitude
+			p.heading = myGps.heading
+			p.speed = myGps.speed
+			@arrayDistance << p
+
+			return @arrayDistance.sort_by &:value
 		end
 	end
 
