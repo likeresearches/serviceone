@@ -54,8 +54,8 @@ class TrackController < ApplicationController
 	end
 
 	def checkAround(track)
-		#liveGps = Track.all
-		liveGps = Track.where('updated_at >= :one_seconds_ago', :one_seconds_ago => Time.now - 3.seconds)
+		liveGps = Track.all
+		#liveGps = Track.where('updated_at >= :one_seconds_ago', :one_seconds_ago => Time.now - 3.seconds)
 		myGps = Track.find_by(user: track.user)
 		@arrayDistance = []
 		
@@ -71,7 +71,7 @@ class TrackController < ApplicationController
 
 			@stringDestination = ""
 
-			puts ("LiveGps = "+liveGps.to_json)
+			
 
 			if (!liveGps.blank?)
 				liveGps.each do |point|
@@ -85,14 +85,20 @@ class TrackController < ApplicationController
 					@arrayDistance << p
 				end
 				jsonDistancia = JSON.parse distancia(@stringDestination, myGps)
-					@arrayDistance.each_with_index do|item,index|
+				
+				
+
+
+
+				@arrayDistance[1..@arrayDistance.count-1].each_with_index do|item,index|
+					
 					item.distancia = jsonDistancia["rows"][0]["elements"][index]["distance"]["text"]
 					item.value = jsonDistancia["rows"][0]["elements"][index]["distance"]["value"]
 				end
 			end
 
 			@arrayDistance = tempo(@arrayDistance)
-			return @arrayDistance.sort_by! &:value
+			return @arrayDistance
 		else
 			return @arrayDistance
 		end
